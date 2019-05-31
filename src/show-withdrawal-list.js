@@ -21,6 +21,7 @@ async function showWithdrawalList() {
     const btcAddress = withdrawal.address;
     const balance = withdrawal.balance / Math.pow(10, 8);
     const status = (withdrawal.status || {}).value;
+
     return {
       id: withdrawal.id,
       ["balance(BTC)"]: balance,

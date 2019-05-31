@@ -76,6 +76,11 @@ async function logSignedIntentions(trusteeList) {
 }
 
 (async function() {
-  await init();
-  await showWithdrawalTx();
+  try {
+    await init();
+    await showWithdrawalTx();
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
 })();
