@@ -6,7 +6,8 @@
     "bitcoinjs-lib": "^5.0.5",
     "chainx.js": "^2.13.0-alpha.4",
     "console.table": "^0.10.0",
-    "dotenv": "^8.0.0"
+    "dotenv": "^8.0.0",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "husky": "^2.3.0",

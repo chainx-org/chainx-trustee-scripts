@@ -20,7 +20,7 @@ async function showWithdrawLimit() {
 async function showWithdrawalList() {
   const withdrawalList = await getBTCWithdrawalList(chainx);
 
-  const normalizedList = withdrawalList.data.map(withdrawal => {
+  const normalizedList = withdrawalList.map(withdrawal => {
     const chainxAddress = chainx.account.encodeAddress(withdrawal.accountid);
     const btcAddress = withdrawal.address;
     const balance = withdrawal.balance / Math.pow(10, 8);
