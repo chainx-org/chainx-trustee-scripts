@@ -3,6 +3,7 @@
  */
 
 require("dotenv").config();
+require("console.table");
 const chainx = require("./chainx");
 const { getWithdrawLimit, getBTCWithdrawalList } = require("./chainx-common");
 const { getUnspents, pickUtxos } = require("./btc-common");
@@ -83,6 +84,10 @@ async function composeBtcTx(withdrawals, fee) {
     change = 0;
   }
 
+  logMinerFee(minerFee);
+  logInputs(targetInputs);
+  logOutputs(withdrawals);
+
   const network =
     properties["bitcoin_type"] === "mainnet"
       ? bitcoin.networks.bitcoin
@@ -102,7 +107,33 @@ async function composeBtcTx(withdrawals, fee) {
   }
 
   const rawTx = txb.__TX.toHex();
+  console.log("生成代签原文:");
   console.log(rawTx);
+}
+
+function logMinerFee(minerFee) {
+  console.log("所花手续费:");
+  console.log(minerFee / Math.pow(10, 8) + " BTC");
+}
+
+function logInputs(inputs) {
+  console.log("所花UTXO列表:");
+  console.table(
+    inputs.map(input => ({
+      ...input,
+      amount: input.amount / Math.pow(10, 8) + " BTC"
+    }))
+  );
+}
+
+function logOutputs(outputs) {
+  console.log("提现列表:");
+  console.table(
+    outputs.map(out => ({
+      address: out.address,
+      balance: out.balance / Math.pow(10, 8) + " BTC"
+    }))
+  );
 }
 
 (async function() {
