@@ -1,5 +1,4 @@
-const ChainX = new require("chainx.js").default;
-const chainx = new ChainX("wss://w1.chainx.org/ws");
+const chainx = require("./chainx");
 require("console.table");
 
 async function showWithdrawalList() {
