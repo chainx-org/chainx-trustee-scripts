@@ -13,7 +13,13 @@ async function getBTCWithdrawalList(chainx) {
   return withdrawalList;
 }
 
+async function getWithdrawLimit(chainx) {
+  const limit = await chainx.asset.getWithdrawalLimitByToken("BTC");
+  return limit;
+}
+
 module.exports = {
   getIntentions,
-  getBTCWithdrawalList
+  getBTCWithdrawalList,
+  getWithdrawLimit
 };

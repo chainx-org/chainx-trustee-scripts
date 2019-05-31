@@ -4,14 +4,14 @@
 
 const chainx = require("./chainx");
 require("console.table");
-const { getBTCWithdrawalList } = require("./chainx-common");
+const { getBTCWithdrawalList, getWithdrawLimit } = require("./chainx-common");
 
 async function init() {
   await chainx.isRpcReady();
 }
 
 async function showWithdrawLimit() {
-  const limit = await chainx.asset.getWithdrawalLimitByToken("BTC");
+  const limit = await getWithdrawLimit(chainx);
 
   console.log("提现设置:\n");
   console.table([limit]);
