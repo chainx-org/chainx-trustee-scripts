@@ -58,7 +58,7 @@ async function parseRawTxAndLog(rawTx) {
 }
 
 async function logSignedIntentions(trusteeList) {
-  const intentions = await getIntentions();
+  const intentions = await getIntentions(chainx);
 
   console.log("已签信托列表:\n");
   for (let trustee of trusteeList) {

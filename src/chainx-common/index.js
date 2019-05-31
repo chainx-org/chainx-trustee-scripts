@@ -3,6 +3,17 @@ async function getIntentions(chainx) {
   return intentions;
 }
 
+async function getBTCWithdrawalList(chainx) {
+  const withdrawalList = await chainx.asset.getWithdrawalList(
+    "Bitcoin",
+    0,
+    100 // 适当增大以显示全部提现
+  );
+
+  return withdrawalList;
+}
+
 module.exports = {
-  getIntentions
+  getIntentions,
+  getBTCWithdrawalList
 };
