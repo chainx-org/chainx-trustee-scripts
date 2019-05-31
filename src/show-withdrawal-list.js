@@ -1,9 +1,18 @@
 const chainx = require("./chainx");
 require("console.table");
 
-async function showWithdrawalList() {
+async function init() {
   await chainx.isRpcReady();
+}
 
+async function showWithdrawLimit() {
+  const limit = await chainx.asset.getWithdrawalLimitByToken("BTC");
+
+  console.log("提现设置:\n");
+  console.table([limit]);
+}
+
+async function showWithdrawalList() {
   const withdrawalList = await chainx.asset.getWithdrawalList(
     "Bitcoin",
     0,
@@ -24,10 +33,15 @@ async function showWithdrawalList() {
     };
   });
 
+  console.log("提现列表: \n");
   console.table(normalizedList);
 
   chainx.provider.websocket.close();
   process.exit(0);
 }
 
-showWithdrawalList();
+(async function() {
+  await init();
+  await showWithdrawLimit();
+  await showWithdrawalList();
+})();
