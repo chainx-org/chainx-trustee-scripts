@@ -1,3 +1,7 @@
+/**
+ * 此脚本显示目前链上代签原文
+ */
+
 const chainx = require("./chainx");
 require("console.table");
 const bitcoin = require("bitcoinjs-lib");

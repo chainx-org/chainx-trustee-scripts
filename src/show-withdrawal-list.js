@@ -1,3 +1,7 @@
+/**
+ * 此脚本显示目前链上提现列表
+ */
+
 const chainx = require("./chainx");
 require("console.table");
 const { getBTCWithdrawalList } = require("./chainx-common");
