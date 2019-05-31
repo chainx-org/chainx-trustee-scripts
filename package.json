@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": ">= 11.5.0"
+  },
   "dependencies": {
     "bitcoinjs-lib": "^5.0.5",
     "chainx.js": "^2.13.0-alpha.4",
