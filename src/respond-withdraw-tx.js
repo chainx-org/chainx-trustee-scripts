@@ -1,8 +1,10 @@
 require("dotenv").config();
-const { remove0x } = require("./utils");
+const { remove0x, addOx } = require("./utils");
 const bitcoin = require("bitcoinjs-lib");
 
 const chainx = require("./chainx");
+const args = process.argv.slice(2);
+const needSubmit = args.find(arg => arg === "--submit");
 
 let redeemScript;
 
@@ -29,6 +31,11 @@ async function respond() {
   }
 
   await sign(withdrawalTx.tx);
+
+  if (!needSubmit) {
+    chainx.provider.websocket.close();
+    process.exit(0);
+  }
 }
 
 async function sign(rawTx) {
@@ -55,9 +62,46 @@ async function sign(rawTx) {
     process.exit(1);
   }
 
-  const signedRawTx = txb.__TX.toHex();
+  const signedRawTx = txb.build().toHex();
   console.log("签名后原文:");
   console.log(signedRawTx);
+
+  await submitIfRequired(signedRawTx);
+}
+
+async function submitIfRequired(rawTx) {
+  if (!needSubmit) {
+    return;
+  }
+
+  console.log("\n开始构造并提交ChainX信托交易...");
+
+  if (!process.env.chainx_private_key) {
+    console.error("没有设置chainx_private_key");
+    process.exit(1);
+  }
+
+  const extrinsic = await chainx.trustee.signWithdrawTx(addOx(rawTx));
+  extrinsic.signAndSend(
+    process.env.chainx_private_key,
+    { acceleration: 1 },
+    (error, result) => {
+      if (error) {
+        console.error("签名且发送交易失败：");
+        console.error(error);
+      }
+
+      if (result) {
+        console.log("交易状态：", result.status);
+
+        if (result.status === "Finalized") {
+          console.log("交易执行结果：", result.result);
+          chainx.provider.websocket.close();
+          process.exit(0);
+        }
+      }
+    }
+  );
 }
 
 (async function() {
