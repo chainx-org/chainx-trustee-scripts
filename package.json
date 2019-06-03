@@ -6,10 +6,11 @@
     "list": "node src/show-withdrawal-list.js",
     "tx": "node src/show-on-chain-withdrawal-tx.js",
     "create": "node src/construct-withdrawal-tx.js",
+    "create-sub": "node src/construct-withdrawal-tx.js --sign --submit",
     "respond": "node src/respond-withdraw-tx.js"
   },
   "dependencies": {
-    "bitcoinjs-lib": "^5.0.5",
+    "bitcoinjs-lib": "4.0.2",
     "chainx.js": "^2.13.0-alpha.4",
     "console.table": "^0.10.0",
     "dotenv": "^8.0.0",

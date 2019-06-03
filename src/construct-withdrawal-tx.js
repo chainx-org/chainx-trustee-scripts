@@ -8,6 +8,11 @@ const chainx = require("./chainx");
 const { getWithdrawLimit, getBTCWithdrawalList } = require("./chainx-common");
 const { getUnspents, pickUtxos } = require("./btc-common");
 const bitcoin = require("bitcoinjs-lib");
+const { remove0x, addOx } = require("./utils");
+
+const args = process.argv.slice(2);
+const needSign = args.find(arg => arg === "--sign");
+const needSubmit = args.find(arg => arg === "--submit");
 
 async function init() {
   if (!process.env.bitcoin_fee_rate) {
@@ -40,12 +45,15 @@ async function construct() {
 
   if (filteredList <= 0) {
     console.log("暂无合法体现");
+    process.exit(0);
   }
 
   await composeBtcTx(filteredList, limit.fee);
 
-  chainx.provider.websocket.close();
-  process.exit(0);
+  if (!needSubmit) {
+    chainx.provider.websocket.close();
+    process.exit(0);
+  }
 }
 
 async function composeBtcTx(withdrawals, fee) {
@@ -106,9 +114,73 @@ async function composeBtcTx(withdrawals, fee) {
     txb.addOutput(addr, change);
   }
 
-  const rawTx = txb.__TX.toHex();
+  signIfRequired(txb, network);
+  const rawTx = txb.build().toHex();
   console.log("生成代签原文:");
   console.log(rawTx);
+
+  await submitIfRequired(withdrawals, rawTx);
+}
+
+function signIfRequired(txb, network) {
+  if (!needSign) {
+    return;
+  }
+
+  if (!process.env.bitcoin_private_key) {
+    console.error("没有设置bitcoin_private_key");
+    process.exit(1);
+  }
+
+  if (!process.env.redeemScript) {
+    console.error("没有设置redeemScript");
+    process.exit(1);
+  }
+  const redeemScript = Buffer.from(remove0x(process.env.redeemScript), "hex");
+
+  const keyPair = bitcoin.ECPair.fromWIF(
+    process.env.bitcoin_private_key,
+    network
+  );
+  for (let i = 0; i < txb.__inputs.length; i++) {
+    txb.sign(i, keyPair, redeemScript);
+  }
+}
+
+async function submitIfRequired(withdrawals, rawTx) {
+  if (!needSubmit) {
+    return;
+  }
+
+  console.log("\n开始构造并提交ChainX信托交易...");
+
+  if (!process.env.chainx_private_key) {
+    console.error("没有设置chainx_private_key");
+    process.exit(1);
+  }
+
+  const ids = withdrawals.map(withdrawal => withdrawal.id);
+  const extrinsic = await chainx.trustee.createWithdrawTx(ids, addOx(rawTx));
+  extrinsic.signAndSend(
+    process.env.chainx_private_key,
+    { acceleration: 1 },
+    (error, result) => {
+      if (error) {
+        console.error("签名且发送交易失败：");
+        console.error(error);
+      }
+
+      if (result) {
+        console.log("交易状态：", result.status);
+
+        if (result.status === "Finalized") {
+          console.log("交易执行结果：", result.result);
+          chainx.provider.websocket.close();
+          process.exit(0);
+        }
+      }
+    }
+  );
 }
 
 function logMinerFee(minerFee) {

@@ -15,8 +15,8 @@ async function init() {
   }
   redeemScript = Buffer.from(remove0x(process.env.redeemScript), "hex");
 
-  if (!process.env.private_key) {
-    console.error("没有设置private_key");
+  if (!process.env.bitcoin_private_key) {
+    console.error("没有设置bitcoin_private_key");
     process.exit(1);
   }
 }
@@ -41,7 +41,10 @@ async function sign(rawTx) {
   const tx = bitcoin.Transaction.fromHex(remove0x(rawTx));
   const txb = bitcoin.TransactionBuilder.fromTransaction(tx, network);
 
-  const keyPair = bitcoin.ECPair.fromWIF(process.env.private_key, network);
+  const keyPair = bitcoin.ECPair.fromWIF(
+    process.env.bitcoin_private_key,
+    network
+  );
 
   try {
     for (let i = 0; i < tx.ins.length; i++) {

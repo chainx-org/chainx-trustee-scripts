@@ -20,6 +20,18 @@ Scripts for ChainX trustee
 
 ChainX websocket 链接地址。
 
+- bitcoin_private_key
+
+比特币私钥（目前只之前 WIF 格式）
+
+- redeemScript
+
+ChainX 信托多签账户赎回脚本
+
+- chainx_private_key
+
+ChainX 账户私钥，用于签名并提交 ChainX 交易。
+
 # How to use
 
 1. 显示当前提现列表
@@ -34,11 +46,21 @@ yarn run list
 yarn run tx
 ```
 
-3. 构造提现交易原文并打印 hex（暂时没有提交上链）
+3. 构造提现交易原文
+
+如果仅需构造交易原文，不需要提交原文，执行：
 
 ```javascript
 yarn run create
 ```
+
+如果需要马上将所构造的交易提交到 ChainX 链上，则执行：
+
+```javascript
+yarn run create-sub
+```
+
+同时，须确保设置 `bitcoin_private_key`、`redeemScript`和`chainx_private_key`。
 
 4. 相应待签原文并打印 hex（暂时没有提交上链）
 
