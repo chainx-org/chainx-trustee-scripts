@@ -34,7 +34,7 @@ yarn run list
 yarn run tx
 ```
 
-3. 构造提现交易原文，并打印 hex
+3. 构造提现交易原文，并打印 hex（暂时没有提交上链）
 
 ```javascript
 yarn run create
