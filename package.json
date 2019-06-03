@@ -2,6 +2,11 @@
   "engines": {
     "node": ">= 11.5.0"
   },
+  "scripts": {
+    "list": "node src/show-withdrawal-list.js",
+    "tx": "node src/show-on-chain-withdrawal-tx.js",
+    "create": "node src/construct-withdrawal-tx.js"
+  },
   "dependencies": {
     "bitcoinjs-lib": "^5.0.5",
     "chainx.js": "^2.13.0-alpha.4",

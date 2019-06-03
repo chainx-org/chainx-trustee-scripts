@@ -7,6 +7,6 @@ if (!process.env.chainx_ws_addr) {
 
 const ChainX = require("chainx.js").default;
 const { WsProvider } = require("chainx.js");
-const provider = new WsProvider("ws://192.168.1.130:8087", false);
+const provider = new WsProvider(process.env.chainx_ws_addr, false);
 provider.connect();
 module.exports = new ChainX(provider);
