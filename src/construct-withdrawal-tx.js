@@ -114,7 +114,7 @@ async function composeBtcTx(withdrawals, fee) {
     txb.addOutput(addr, change);
   }
 
-  signIfRequired(txb, network);
+  await signIfRequired(txb, network);
   const rawTx = txb.build().toHex();
   console.log("生成代签原文:");
   console.log(rawTx);
@@ -122,7 +122,7 @@ async function composeBtcTx(withdrawals, fee) {
   await submitIfRequired(withdrawals, rawTx);
 }
 
-function signIfRequired(txb, network) {
+async function signIfRequired(txb, network) {
   if (!needSign) {
     return;
   }
@@ -132,11 +132,11 @@ function signIfRequired(txb, network) {
     process.exit(1);
   }
 
-  if (!process.env.redeemScript) {
-    console.error("没有设置redeemScript");
-    process.exit(1);
-  }
-  const redeemScript = Buffer.from(remove0x(process.env.redeemScript), "hex");
+  const info = await chainx.trustee.getTrusteeSessionInfo("Bitcoin");
+  const redeemScript = Buffer.from(
+    remove0x(info.hotEntity.redeemScript),
+    "hex"
+  );
 
   const keyPair = bitcoin.ECPair.fromWIF(
     process.env.bitcoin_private_key,

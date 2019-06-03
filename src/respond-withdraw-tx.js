@@ -11,11 +11,8 @@ let redeemScript;
 async function init() {
   await chainx.isRpcReady();
 
-  if (!process.env.redeemScript) {
-    console.error("没有设置redeemScript");
-    process.exit(1);
-  }
-  redeemScript = Buffer.from(remove0x(process.env.redeemScript), "hex");
+  const info = await chainx.trustee.getTrusteeSessionInfo("Bitcoin");
+  redeemScript = Buffer.from(remove0x(info.hotEntity.redeemScript), "hex");
 
   if (!process.env.bitcoin_private_key) {
     console.error("没有设置bitcoin_private_key");
