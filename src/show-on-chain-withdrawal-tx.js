@@ -8,13 +8,16 @@ const bitcoin = require("bitcoinjs-lib");
 const { remove0x } = require("./utils");
 const { getIntentions } = require("./chainx-common");
 
-const network =
-  process.env.network === "mainnet"
-    ? bitcoin.networks.bitcoin
-    : bitcoin.networks.testnet;
+let network;
 
 async function init() {
   await chainx.isRpcReady();
+
+  const properties = await chainx.chain.chainProperties();
+  network =
+    properties["bitcoin_type"] === "mainnet"
+      ? bitcoin.networks.bitcoin
+      : bitcoin.networks.testnet;
 }
 
 async function showWithdrawalTx() {
@@ -33,11 +36,6 @@ async function showWithdrawalTx() {
 
       if (withdrawalTx.signStatus) {
         console.log("签名已完成");
-      }
-
-      if (withdrawalTx.redeemScript) {
-        console.log("\n赎回脚本: \n");
-        console.log(withdrawalTx.redeemScript);
       }
     }
   }

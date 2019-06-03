@@ -4,10 +4,6 @@ Scripts for ChainX trustee
 
 # Config
 
-- network
-
-比特币网络类型，一般为 mainnet 或 testnet。
-
 - bitcoin_fee_rate
 
 构建比特币交易时所用的 fee rate，单位为聪。
