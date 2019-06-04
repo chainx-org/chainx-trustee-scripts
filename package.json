@@ -8,7 +8,8 @@
     "create": "node src/construct-withdrawal-tx.js",
     "create-sub": "node src/construct-withdrawal-tx.js --sign --submit",
     "respond": "node src/respond-withdraw-tx.js",
-    "respond-sub": "node src/respond-withdraw-tx.js --submit"
+    "respond-sub": "node src/respond-withdraw-tx.js --submit",
+    "create-to-cold": "node src/create-to-cold.js"
   },
   "dependencies": {
     "bitcoinjs-lib": "4.0.2",

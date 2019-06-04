@@ -67,3 +67,15 @@ yarn run respond
 ```javascript
 yarn run respond-sub
 ```
+
+5. 构造热地址到冷地址转账交易
+
+```javascript
+yarn create-to-cold 0.01
+```
+
+其中，0.01 为待转账金额。此脚本需配置一下变量到.env
+
+- bitcoin_fee_rate
+- min_change
+- bitcoin_private_key
