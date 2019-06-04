@@ -74,8 +74,18 @@ yarn run respond-sub
 yarn create-to-cold 0.01
 ```
 
-其中，0.01 为待转账金额。此脚本需配置一下变量到.env
+其中，0.01 为待转账金额。此脚本需配置以下变量到.env
 
 - bitcoin_fee_rate
 - min_change
+- bitcoin_private_key
+
+6. 响应热地址到冷地址转账交易
+
+```javascript
+yarn respond-to-cold 0100000001c8f...
+```
+
+其中，`0100000001c8f...`为待签原文。此脚本需配置以下变量到.env
+
 - bitcoin_private_key
