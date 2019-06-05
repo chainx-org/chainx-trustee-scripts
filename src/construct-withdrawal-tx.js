@@ -114,8 +114,13 @@ async function composeBtcTx(withdrawals, fee) {
     txb.addOutput(addr, change);
   }
 
-  await signIfRequired(txb, network);
-  const rawTx = txb.build().toHex();
+  const signed = await signIfRequired(txb, network);
+  let rawTx;
+  if (signed) {
+    rawTx = txb.build().toHex();
+  } else {
+    rawTx = txb.buildIncomplete().toHex();
+  }
   console.log("生成代签原文:");
   console.log(rawTx);
 
@@ -124,7 +129,7 @@ async function composeBtcTx(withdrawals, fee) {
 
 async function signIfRequired(txb, network) {
   if (!needSign) {
-    return;
+    return false;
   }
 
   if (!process.env.bitcoin_private_key) {
@@ -145,6 +150,8 @@ async function signIfRequired(txb, network) {
   for (let i = 0; i < txb.__inputs.length; i++) {
     txb.sign(i, keyPair, redeemScript);
   }
+
+  return true;
 }
 
 async function submitIfRequired(withdrawals, rawTx) {
