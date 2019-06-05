@@ -36,7 +36,35 @@ function pickUtxos(utxos, outSum) {
   return result;
 }
 
+async function calcTargetUnspents(utxos, amount, feeRate, required, total) {
+  let outSum = amount;
+  let targetInputs = pickUtxos(utxos, amount);
+  let inputSum = targetInputs.reduce((sum, input) => sum + input.amount, 0);
+  let outputLength = 1;
+  let bytes =
+    targetInputs.length * (48 + 73 * required + 34 * total) +
+    34 * (outputLength + 1) +
+    14;
+
+  let minerFee = parseInt(
+    (Number(process.env.bitcoin_fee_rate) * bytes) / 1000
+  );
+
+  while (inputSum < outSum + minerFee) {
+    targetInputs = pickUtxos(utxos, outSum + minerFee);
+    inputSum = targetInputs.reduce((sum, input) => sum + input.amount, 0);
+    bytes =
+      targetInputs.length * (48 + 73 * required + 34 * total) +
+      34 * (outputLength + 1) +
+      14;
+    minerFee = (Number(process.env.bitcoin_fee_rate) * bytes) / 1000;
+  }
+
+  return [targetInputs, minerFee];
+}
+
 module.exports = {
   getUnspents,
-  pickUtxos
+  pickUtxos,
+  calcTargetUnspents
 };

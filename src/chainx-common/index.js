@@ -19,8 +19,18 @@ async function getWithdrawLimit(chainx) {
   return limit;
 }
 
+async function getTrusteeInfo(chainx) {
+  const info = await chainx.trustee.getTrusteeSessionInfo("Bitcoin");
+  const { addr, redeemScript } = info.hotEntity;
+  const { addr: coldAddr } = info.coldEntity;
+  const { required, total } = info.counts;
+
+  return info;
+}
+
 module.exports = {
   getIntentions,
   getBTCWithdrawalList,
-  getWithdrawLimit
+  getWithdrawLimit,
+  getTrusteeInfo
 };

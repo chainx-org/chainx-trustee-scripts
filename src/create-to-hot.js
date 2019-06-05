@@ -1,5 +1,5 @@
 /**
- * 此脚本用于构造热转冷交易
+ * 此脚本用于构造冷转热交易
  */
 
 require("dotenv").config();
@@ -40,12 +40,12 @@ async function init() {
 
 async function construct() {
   const info = await chainx.trustee.getTrusteeSessionInfo("Bitcoin");
-  const { addr, redeemScript } = info.hotEntity;
-  const { addr: coldAddr } = info.coldEntity;
+  const { addr: hotAddr } = info.hotEntity;
+  const { addr: coldAddr, redeemScript } = info.coldEntity;
   const { required, total } = info.counts;
 
   const properties = await chainx.chain.chainProperties();
-  const unspents = await getUnspents(addr, properties["bitcoin_type"]);
+  const unspents = await getUnspents(coldAddr, properties["bitcoin_type"]);
   unspents.sort((a, b) => a.amount > b.amount);
 
   const [targetInputs, minerFee] = await calcTargetUnspents(
@@ -77,7 +77,7 @@ async function construct() {
 
   txb.addOutput(coldAddr, amount);
   if (change > 0) {
-    txb.addOutput(addr, change);
+    txb.addOutput(hotAddr, change);
   }
 
   const keyPair = bitcoin.ECPair.fromWIF(
