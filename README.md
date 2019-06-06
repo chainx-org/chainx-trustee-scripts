@@ -18,13 +18,15 @@ ChainX websocket 链接地址。
 
 - bitcoin_private_key
 
-比特币私钥（目前只之前 WIF 格式）
+比特币私钥（目前只之前 WIF 格式），建议只在离线环境下配置该项。
 
 - chainx_private_key
 
 ChainX 账户私钥，用于签名并提交 ChainX 交易。
 
 # How to use
+
+## 在线环境下可运行以下脚本：
 
 1. 显示当前提现列表
 
@@ -89,3 +91,13 @@ yarn respond-to-cold 0100000001c8f...
 其中，`0100000001c8f...`为待签原文。此脚本需配置以下变量到.env
 
 - bitcoin_private_key
+
+## 离线环境下使用以下脚本
+
+1. 签名交易
+
+```javascript
+yarn run sign 0100000001c8f...
+```
+
+须确保设置 `bitcoin_private_key`和`redeem_script`。
