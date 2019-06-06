@@ -11,7 +11,8 @@
     "respond-sub": "node src/respond-withdraw-tx.js --submit",
     "create-to-cold": "node src/create-to-cold.js",
     "respond-to-cold": "node src/respond-to-cold.js",
-    "sign": "node src/sign-tx.js"
+    "sign": "node src/sign-tx.js",
+    "submit": "node src/submit.js"
   },
   "dependencies": {
     "bitcoinjs-lib": "4.0.2",
