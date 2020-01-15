@@ -25,6 +25,7 @@ async function respond() {
 
   if (!withdrawalTx) {
     console.log("目前链上无代签原文");
+    process.exit(0);
   }
 
   await sign(withdrawalTx.tx);
