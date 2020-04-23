@@ -41,7 +41,7 @@ async function construct() {
   const limit = await getWithdrawLimit(chainx);
 
   let filteredList = filterSmallWithdraw(list, limit.minimalWithdrawal);
-  filteredList = leaveOnelyApplying(list);
+  filteredList = leaveOnelyApplying(filteredList);
 
   if (filteredList <= 0) {
     console.log("暂无合法体现");
@@ -63,7 +63,7 @@ async function composeBtcTx(withdrawals, fee) {
   const { required, total } = info.counts;
 
   const unspents = await getUnspents(addr, properties["bitcoin_type"]);
-  unspents.sort((a, b) => a.amount > b.amount);
+  unspents.sort((a, b) => Number(b.amount) - Number(a.amount));
 
   let outSum = withdrawals.reduce(
     (result, withdraw) => result + withdraw.balance - fee,
