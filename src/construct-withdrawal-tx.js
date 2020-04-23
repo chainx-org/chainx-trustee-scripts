@@ -213,6 +213,9 @@ function logOutputs(outputs) {
       balance: out.balance / Math.pow(10, 8) + " BTC"
     }))
   );
+
+  const all = outputs.reduce((result, out) => result + out.balance, 0);
+  console.table([{ all: all / Math.pow(10, 8) + " BTC" }]);
 }
 
 (async function() {
